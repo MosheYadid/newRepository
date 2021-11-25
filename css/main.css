@@ -1,0 +1,21 @@
+body {
+    text-align: center;
+    background-image: url(/image/1.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+h1{
+    color: rgb(79, 248, 248);
+}
+table {
+    display: table;
+    margin: auto;
+    background-color: lightgray;
+}
+
+td {
+    border: groove;
+    height: 25px;
+    width: 25px;
+}
