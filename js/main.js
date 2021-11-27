@@ -22,7 +22,7 @@ var gLevel = {
 // containing cell objects:
 // Each cell: 
 var gBoard = {
-    minesAroundCount: 4,
+    minesAroundCount: 0,
     isShown: true,
     isMine: false,
     isMarked: true
@@ -49,7 +49,7 @@ function initGame() {
 }
 // buildBoard()
 function buildBoard() {
-    var bombCounter = 0;
+    
     for (var i = 0; i < gLevel.SIZE; i++) {
         // console.log(i);
         gMineBoard[i] = [];
@@ -63,30 +63,37 @@ function buildBoard() {
             gMineBoard[i][j] = cell
             // console.table(gMineBoard);
 
-            if (Math.random() > 0.6 && bombCounter < gLevel.MINE) {
-                cell.isMine = true
-                gMinesLocation.push({ indexI: i, indexJ: j });
-                bombCounter++;
-                // console.log(bombCounter);
-            }
+
         }
     }
-    // return board;
+    gMineBoard[0][0].isMine = true
+    gMineBoard[1][2].isMine = true
+    return gMineBoard;
 }
 // setMinesNegsCount(board)
-function setMinesNegsCount(gMineBoard, gMinesLocation) {
+function setMinesNegsCount(board) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
 
-    for (var minesIndex = 0; minesIndex < gMinesLocation.length; minesIndex++) {
-        for (var i = gMinesLocation[minesIndex].indexI - 1; i <= gMinesLocation[minesIndex].indexI + 1; i++) {
-            for (var j = gMinesLocation[minesIndex].indexJ - 1; j <= gMinesLocation[minesIndex].indexJ + 1; j++) {
-                if (i === gMinesLocation[minesIndex].indexI && j === gMinesLocation[minesIndex].indexJ) continue;
-                if (i < 0 || i > gMineBoard.length - 1) continue;
-                if (j < 0 || j > gMineBoard[0].length - 1) continue;
+            var cell = board[i][j]
+            cell.minesAroundCount = countMineNeighbours(i, j, board)
 
-                gMineBoard[i][j].negs += 1;
-            }
+        }
+
+    }
+}
+
+function countMineNeighbours(cellI, cellJ, mat) {
+    var negsCount = 0;
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i > mat.length - 1) continue;
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (j < 0 || j > mat[i].length - 1) continue;
+            if (i === cellI && j === cellJ) continue;
+            if (mat[i][j].isMine) negsCount++;
         }
     }
+    return negsCount;
 }
 
 // renderBoard(board) 
@@ -187,7 +194,6 @@ function cellMarked(elCell) {
     elCell.innerHTML = FLAG
     if(gMineBoard[i][j].isMine) {
         gCount.markedCount++;
-        updateMinesLeft()
     } else {
         gNumOfFlags++;
     }
